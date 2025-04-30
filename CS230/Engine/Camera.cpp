@@ -2,7 +2,7 @@
 #include "../Engine/Engine.h"
 #include <string>
 #include "Matrix.h"
-
+#include <raylib.h>
 CS230::Camera::Camera(Math::rect player_zone) : player_zone(player_zone), position({ 0.0f, 0.0f })
 {
 }
