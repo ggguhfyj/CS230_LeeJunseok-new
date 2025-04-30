@@ -20,11 +20,43 @@ Math::ivec2 CS230::Texture::GetSize() const {
     return { texture.width, texture.height };
 }
 
-//void CS230::Texture::Draw(Math::vec2 location) {
-//    location.y *= -1;
-//    location.y += Engine::GetWindow().GetSize().y - texture.height;
-//    DrawTexture(texture, int(location.x), int(location.y), WHITE);
-//}
+void CS230::Texture::Draw(Math::TransformationMatrix display_matrix, Math::ivec2 texel_position, Math::ivec2 frame_size) {
+    Math::vec2 bottom_left = display_matrix * Math::vec2{ 0, 0 };
+    Math::vec2 bottom_right = display_matrix * Math::vec2{ double(frame_size.x), 0 };
+    Math::vec2 top_left = display_matrix * Math::vec2{ 0, double(frame_size.y) };
+    Math::vec2 top_right = display_matrix * Math::vec2{ double(frame_size.x), double(frame_size.y) };
+
+    const double H = Engine::GetWindow().GetSize().y;
+    bottom_left.y = bottom_left.y * -1 + H;
+    bottom_right.y = bottom_right.y * -1 + H;
+    top_left.y = top_left.y * -1 + H;
+    top_right.y = top_right.y * -1 + H;
+
+    const float left_u = float(texel_position.x) / float(texture.width);
+    const float right_u = (float(texel_position.x) + frame_size.x) / float(texture.width);
+    const float bottom_v = (float(texel_position.y) + frame_size.y) / float(texture.height);
+    const float top_v = float(texel_position.y) / float(texture.height);
+
+    constexpr Color tint = WHITE;
+
+    rlSetTexture(texture.id);
+    rlBegin(RL_QUADS);
+
+    rlColor4ub(tint.r, tint.g, tint.b, tint.a);
+    rlNormal3f(0.0f, 0.0f, 1.0f);
+    rlTexCoord2f(left_u, top_v);
+    rlVertex2f(float(top_left.x), float(top_left.y));
+    rlTexCoord2f(left_u, bottom_v);
+    rlVertex2f(float(bottom_left.x), float(bottom_left.y));
+    rlTexCoord2f(right_u, bottom_v);
+    rlVertex2f(float(bottom_right.x), float(bottom_right.y));
+    rlTexCoord2f(right_u, top_v);
+    rlVertex2f(float(top_right.x), float(top_right.y));
+
+    rlEnd();
+    rlSetTexture(0);
+}
+
 
 
 CS230::Texture::Texture()

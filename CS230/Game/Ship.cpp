@@ -20,9 +20,9 @@ Ship::Ship(Math::vec2 start_position) :
 }
 
 void Ship::Load() {
-    sprite.Load("Assets/Ship.png", { {50, 41}, {-15, -41}, {15, -41} });
-    flame_left.Load("Assets/Flame.png", { 8, 15 });
-    flame_right.Load("Assets/Flame.png", { 8, 15 });
+    sprite.Load("Assets/Ship.spt");
+    flame_left.Load("Assets/Flame.spt");
+    flame_right.Load("Assets/Flame.spt");
 
     velocity = { 0, 0 };
 }
@@ -45,7 +45,7 @@ void Ship::Update([[maybe_unused]] double dt) {
     position += velocity * dt;
 
     Math::ivec2 windowSize = Engine::GetWindow().GetSize();
-    Math::ivec2 spriteSize = sprite.GetTextureSize();
+    Math::ivec2 spriteSize = sprite.GetFrameSize();
 
     if (position.x < -spriteSize.x) {
         position.x = windowSize.x;

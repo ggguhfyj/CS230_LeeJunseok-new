@@ -14,7 +14,7 @@ void Asteroid::Load()
     
     position = start_position;
     velocity = {0,0};
-    sprite.Load("Assets/Asteroid.png", { 70,3 });
+    sprite.Load("Assets/Asteroid.spt");
     current_state = &state_bouncing;
     current_state->Enter(this);
 

@@ -20,6 +20,8 @@ namespace CS230 {
         Texture();
         Texture(const std::filesystem::path& file_name);
         ~Texture();
+        //new texture draw function
+        void Draw(Math::TransformationMatrix display_matrix, Math::ivec2 texel_position, Math::ivec2 frame_size);
 
         Texture(const Texture&) = delete;
         Texture& operator=(const Texture&) = delete;

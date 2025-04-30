@@ -22,7 +22,7 @@ Cat::Cat(Math::vec2 start_position, const CS230::Camera& camera) :
 }
 
 void Cat::Load() {
-    sprite.Load("Assets/Cat.png", { 64, 15 });
+    sprite.Load("Assets/Cat.spt");
     position = start_position;
     velocity = { 0, 0 };
     current_state = &state_idle;
@@ -36,12 +36,12 @@ void Cat::Update(double dt) {
     current_state->CheckExit(this);
 
     // Boundary Check
-    if (position.x < camera.GetPosition().x + sprite.GetTextureSize().x / 2) {
-        position.x = camera.GetPosition().x + sprite.GetTextureSize().x / 2;
+    if (position.x < camera.GetPosition().x + sprite.GetFrameSize().x / 2) {
+        position.x = camera.GetPosition().x + sprite.GetFrameSize().x / 2;
         velocity.x = 0;
     }
-    if (position.x + sprite.GetTextureSize().x / 2 > camera.GetPosition().x + Engine::GetWindow().GetSize().x) {
-        position.x = camera.GetPosition().x + Engine::GetWindow().GetSize().x - sprite.GetTextureSize().x / 2;
+    if (position.x + sprite.GetFrameSize().x / 2 > camera.GetPosition().x + Engine::GetWindow().GetSize().x) {
+        position.x = camera.GetPosition().x + Engine::GetWindow().GetSize().x - sprite.GetFrameSize().x / 2;
         velocity.x = 0;
     }
     object_matrix = Math::TranslationMatrix(position);
