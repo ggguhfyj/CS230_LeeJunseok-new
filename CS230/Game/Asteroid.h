@@ -13,6 +13,7 @@ Created:    March 8, 2023
 #include "..\Engine\Vec2.h"
 #include "..\Engine\Matrix.h"
 class Asteroid {
+   
 public:
     Asteroid();
     Asteroid(Math::vec2 start_position);
@@ -21,6 +22,10 @@ public:
     void Draw(Math::TransformationMatrix camera_matrix);
 
 private:
+    enum class Animations {
+        Landing,
+        None
+    };
     class State {
     public:
         virtual void Enter(Asteroid* asteroid) = 0;
@@ -58,4 +63,5 @@ private:
     Math::vec2 velocity;
     Math::TransformationMatrix object_matrix;
     static constexpr double bounce_velocity = 500;
+    static constexpr double landing = 0.5;
 };

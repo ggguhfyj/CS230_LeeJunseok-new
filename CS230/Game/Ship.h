@@ -22,6 +22,10 @@ public:
 	void Draw();
 	void Reset();
 private:
+	enum class FlameAnim {
+		None,
+		Flame
+	};
 	CS230::Sprite sprite;
 	CS230::Sprite flame_left;
 	CS230::Sprite flame_right;
@@ -35,5 +39,7 @@ private:
 	double angle = 0;
 	static constexpr double rotation_speed = 0.06;
 	static constexpr double scale = 0.75;
+	bool drawflame = false;
+	bool flame_is_on = false;
 
 };

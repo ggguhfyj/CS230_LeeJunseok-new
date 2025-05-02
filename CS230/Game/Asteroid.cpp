@@ -21,16 +21,11 @@ void Asteroid::Load()
 }
 
 void Asteroid::Update(double dt) {
-    
-
+   
     current_state->Update(this, dt);
-    
+    sprite.Update(dt);
+    position += velocity * dt;
     current_state->CheckExit(this);
-
-    if (position.y < Mode1::floor) {
-        position.y = Mode1::floor;
-        velocity.y = bounce_velocity;
-    }
     object_matrix = Math::TranslationMatrix(position);
 }
 
@@ -50,26 +45,37 @@ void Asteroid::change_state(State* new_state)
 
 void Asteroid::State_Bouncing::Enter(Asteroid* asteroid)
 {
+    if (asteroid->position.y <= Mode1::floor) {
+        asteroid->sprite.PlayAnimation(static_cast<int>(Animations::None));
+        asteroid->velocity.y = Asteroid::bounce_velocity;
+    }
+    else {
+        asteroid->velocity.y = 0;
+    }
     asteroid->velocity.y = bounce_velocity;
+    
 }
 
 void Asteroid::State_Bouncing::Update(Asteroid* asteroid, double dt)
 {
     asteroid->velocity.y -= Mode1::gravity * dt;
-    asteroid->position += asteroid->velocity * dt;
+    //asteroid->position += asteroid->velocity * dt;
 }
 
 void Asteroid::State_Bouncing::CheckExit(Asteroid* asteroid)
 {
-    if (asteroid->position.y < Mode1::floor) {
+    if (asteroid->velocity.y < 0 && asteroid->position.y < Mode1::floor) {
+        asteroid->position.y = Mode1::floor;
         asteroid->change_state(&asteroid->state_landing);
     }
 }
 
 void Asteroid::State_Landing::Enter(Asteroid* asteroid)
 {
+    asteroid->sprite.PlayAnimation(static_cast<int>(Animations::Landing));
     asteroid->velocity.y = 0;
     asteroid->position.y = Mode1::floor;
+    
 }
 
 void Asteroid::State_Landing::Update(Asteroid* asteroid, double dt)
@@ -79,5 +85,7 @@ void Asteroid::State_Landing::Update(Asteroid* asteroid, double dt)
 
 void Asteroid::State_Landing::CheckExit(Asteroid* asteroid)
 {
-    asteroid->change_state(&asteroid->state_bouncing);
+    if (asteroid->sprite.AnimationEnded()) {
+        asteroid->change_state(&asteroid->state_bouncing);
+    }
 }

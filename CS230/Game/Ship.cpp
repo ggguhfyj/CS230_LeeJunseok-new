@@ -23,12 +23,29 @@ void Ship::Load() {
     sprite.Load("Assets/Ship.spt");
     flame_left.Load("Assets/Flame.spt");
     flame_right.Load("Assets/Flame.spt");
-
     velocity = { 0, 0 };
+    position = start_position;
+    flame_is_on = false;
+    drawflame = false;
+    angle = 0.0;
 }
 
 void Ship::Update([[maybe_unused]] double dt) {
+    bool IsWDown = Engine::GetInput().KeyDown(CS230::Input::Keys::W);
+    if (IsWDown != flame_is_on) {
+        flame_is_on = IsWDown;
+        int anim = flame_is_on
+            ? static_cast<int>(FlameAnim::Flame)
+            : static_cast<int>(FlameAnim::None);
+
+        flame_left.PlayAnimation(anim);
+        flame_right.PlayAnimation(anim);
+    }
+    flame_right.Update(dt);
+    flame_left.Update(dt);
+    sprite.Update(dt);
     if (Engine::GetInput().KeyDown(CS230::Input::Keys::W)) {
+        drawflame = true;
         velocity += Math::RotationMatrix(angle) * Math::vec2{ 0, speed * dt };
     }
 
@@ -65,8 +82,12 @@ void Ship::Update([[maybe_unused]] double dt) {
 }
 
 void Ship::Draw() {
-    flame_left.Draw(object_matrix * Math::TranslationMatrix(sprite.GetHotSpot(1)));
-    flame_right.Draw(object_matrix * Math::TranslationMatrix(sprite.GetHotSpot(2)));
+    if (drawflame)
+    {
+        flame_left.Draw(object_matrix * Math::TranslationMatrix(static_cast<Math::vec2>(sprite.GetHotSpot(1))));
+        flame_right.Draw(object_matrix * Math::TranslationMatrix(static_cast<Math::vec2>(sprite.GetHotSpot(2))));
+    }
+    
     sprite.Draw(object_matrix);
 }
 

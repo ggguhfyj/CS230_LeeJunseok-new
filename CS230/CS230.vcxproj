@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Animation.cpp" />
     <ClCompile Include="Engine\Camera.cpp" />
     <ClCompile Include="Engine\Engine.cpp" />
     <ClCompile Include="Engine\GameStateManager.cpp" />
@@ -39,6 +40,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Animation.h" />
     <ClInclude Include="Engine\Camera.h" />
     <ClInclude Include="Engine\Engine.h" />
     <ClInclude Include="Engine\Gamestate.h" />

@@ -23,6 +23,7 @@ public:
     const Math::vec2& GetPosition() const { return position; }; // public getter function;
 
 private:
+    
     void update_x_velocity(double dt);
     class State {
     public:
@@ -92,4 +93,12 @@ private:
     bool flipped = false;
     bool jumping = false;
     bool going_up = false;
+    enum class Animations {
+        Idle,
+        Running,
+        Jumping,
+        Falling,
+        Skidding
+    };
+
 };
