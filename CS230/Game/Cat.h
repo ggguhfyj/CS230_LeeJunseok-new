@@ -8,20 +8,21 @@ Author:     Jonathan Holmes
 Created:    March 8, 2023
 */
 #pragma once
-#include "..\Engine\Sprite.h"
+//#include "..\Engine\Sprite.h"
+//#include "..\Engine\Vec2.h"
 #include "..\Engine\Input.h"
-#include "..\Engine\Vec2.h"
 #include "..\Engine\Camera.h"
 #include "..\Engine\Matrix.h"
-class Cat {
+#include "..\Engine\GameObject.h"
+class Cat : public CS230::GameObject{
 public:
     Cat(Math::vec2 start_position,const CS230::Camera& camera);
-    void Load();
-    void Update(double dt);
-    void Draw(Math::TransformationMatrix camera_matrix);
+    //void Load();
+    void Update(double dt) override;
+    //void Draw(Math::TransformationMatrix camera_matrix) override;
 
-    const Math::vec2& GetPosition() const { return position; }; // public getter function;
-
+    //const Math::vec2& GetPosition() const { return position; }; // public getter function;
+    const Math::vec2& GetPosition() const { return GameObject::GetPosition(); }
 private:
     
     void update_x_velocity(double dt);
@@ -79,18 +80,18 @@ private:
 
     void change_state(State* new_state);
     State* current_state = nullptr;
-    CS230::Sprite sprite;
-    Math::vec2 start_position;
-    Math::vec2 position;
-    Math::vec2 velocity;
+    //CS230::Sprite sprite;
+    //Math::vec2 start_position; we dont need this anymnore in 7.1
+    //Math::vec2 position;
+    //Math::vec2 velocity;
     const CS230::Camera& camera;
-    Math::TransformationMatrix object_matrix;
+    //Math::TransformationMatrix object_matrix;
     static constexpr double x_acceleration = 300;
     static constexpr double x_drag = 200;
     static constexpr double max_velocity = 250;
     static constexpr double jump_velocity = 650;
     
-    bool flipped = false;
+    //bool flipped = false;
     bool jumping = false;
     bool going_up = false;
     enum class Animations {

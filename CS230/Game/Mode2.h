@@ -13,6 +13,9 @@ Created:    March 15, 2025
 #include "raylib.h"
 #include "../Engine/Sprite.h"
 #include "../Game/Ship.h"
+#include "..\Engine\GameObjectManager.h"
+
+
 class Mode2 : public CS230::GameState {
 public:
     Mode2();
@@ -29,6 +32,7 @@ public:
 
 
 public:
+    CS230::GameObjectManager gameobjectmanager;
     Ship ship;
     CS230::Window window;
 

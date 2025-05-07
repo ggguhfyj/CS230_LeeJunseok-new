@@ -9,21 +9,22 @@ Created:    March 8, 2023
 */
 
 #pragma once
-#include "..\Engine\Sprite.h"
-#include "..\Engine\Vec2.h"
+//#include "..\Engine\Sprite.h"
+//#include "..\Engine\Vec2.h"
 #include "..\Engine\Matrix.h"
-class Asteroid {
+#include "..\Engine\GameObject.h"
+class Asteroid : public CS230::GameObject {
    
 public:
     Asteroid();
     Asteroid(Math::vec2 start_position);
-    void Load();
-    void Update(double dt);
-    void Draw(Math::TransformationMatrix camera_matrix);
+    //void Load();
+    void Update(double dt) override;
+    //void Draw(Math::TransformationMatrix camera_matrix) override;
 
 private:
     enum class Animations {
-        Landing,
+        state_land,
         None
     };
     class State {
@@ -57,11 +58,11 @@ private:
 
 
 
-    CS230::Sprite sprite;
-    Math::vec2 start_position;
-    Math::vec2 position;
-    Math::vec2 velocity;
-    Math::TransformationMatrix object_matrix;
+    //CS230::Sprite sprite;
+    //Math::vec2 start_position;
+    //Math::vec2 position;
+    //Math::vec2 velocity;
+    //Math::TransformationMatrix object_matrix;
     static constexpr double bounce_velocity = 500;
     static constexpr double landing = 0.5;
 };

@@ -13,47 +13,47 @@ Created:    March 8, 2023
 #include "../Engine/Engine.h"
 #include "../Game/Mode1.h"
 #include <cmath>
-//testing for new branch
+
 Cat::Cat(Math::vec2 start_position, const CS230::Camera& camera) :
-    start_position(start_position),
-    velocity({ 0.0,0.0 }),
-    position(start_position),
+    //start_position(start_position),
+    //velocity({ 0.0,0.0 }),
+    //position(start_position),
     camera(camera),
-    current_state(nullptr),
-    flipped(false)
+    current_state(&state_idle)
+    //flipped(false)
     
 {
     
+    start_position;
+    sprite.Load("Assets/Cat.spt");
+    current_state->Enter(this);
+    
 }
 
-void Cat::Load() {
-    sprite.Load("Assets/Cat.spt");
-    position = start_position;
-    velocity = { 0, 0 };
-    current_state = &state_idle;
-    flipped = false;
-    current_state->Enter(this);
-}
+//void Cat::Load() {
+//    sprite.Load("Assets/Cat.spt");
+//    //position = start_position;
+//    velocity = { 0, 0 };
+//    current_state = &state_idle;
+//    flipped = false;
+//    current_state->Enter(this);
+//}
 
 
 void Cat::Update(double dt) {
     current_state->Update(this, dt);
     sprite.Update(dt);
-    //position += velocity * dt;
+    UpdatePosition(dt * GetVelocity());
     current_state->CheckExit(this);
 
     // Boundary Check
-    if (position.x < camera.GetPosition().x + sprite.GetFrameSize().x / 2) {
-        position.x = camera.GetPosition().x + sprite.GetFrameSize().x / 2;
-        velocity.x = 0;
+    if (GetPosition().x < camera.GetPosition().x + sprite.GetFrameSize().x / 2) {
+        SetPosition({ camera.GetPosition().x + sprite.GetFrameSize().x / 2, GetPosition().y });
+        SetVelocity({ 0, GetVelocity().y });
     }
-    if (position.x + sprite.GetFrameSize().x / 2 > camera.GetPosition().x + Engine::GetWindow().GetSize().x) {
-        position.x = camera.GetPosition().x + Engine::GetWindow().GetSize().x - sprite.GetFrameSize().x / 2;
-        velocity.x = 0;
-    }
-    object_matrix = Math::TranslationMatrix(position);
-    if (flipped == true) {
-        object_matrix *= Math::ScaleMatrix({ -1.0, 1.0 });
+    if (GetPosition().x + sprite.GetFrameSize().x / 2 > camera.GetPosition().x + Engine::GetWindow().GetSize().x) {
+        SetPosition({ camera.GetPosition().x + Engine::GetWindow().GetSize().x - sprite.GetFrameSize().x / 2, GetPosition().y });
+        SetVelocity({ 0, GetVelocity().y });
     }
 }
 
@@ -61,30 +61,38 @@ void Cat::Update(double dt) {
 
 void Cat::update_x_velocity(double dt) {
     if (Engine::GetInput().KeyDown(CS230::Input::Keys::Right) && !Engine::GetInput().KeyDown(CS230::Input::Keys::Left)) {
-        velocity.x += x_acceleration * dt;
-        if (velocity.x > max_velocity) {
-            velocity.x = max_velocity;
+        //velocity.x += x_acceleration * dt;
+        this->UpdateVelocity({ x_acceleration * dt,0 });
+
+        if (this->GetVelocity().x > max_velocity) {
+            //velocity.x = max_velocity;
+            this->SetVelocity({ max_velocity, this->GetVelocity().y });
             //Engine::GetLogger().LogEvent("Reached max velocity while moving Right\n");
         }
-        flipped = false;
+        //flipped = false;
+        this->SetScale({1,1}); //assuming 1,1 is the normal scale
     }
     else if (Engine::GetInput().KeyDown(CS230::Input::Keys::Left) && !Engine::GetInput().KeyDown(CS230::Input::Keys::Right)) {
-        velocity.x -= x_acceleration * dt;
-        if (velocity.x < -max_velocity) {
-            velocity.x = -max_velocity;
+        //velocity.x -= x_acceleration * dt;
+        this->UpdateVelocity({ -x_acceleration * dt,0 });
+        if (this->GetVelocity().x < -max_velocity) {
+            this->SetVelocity({ -max_velocity, this->GetVelocity().y });
            // Engine::GetLogger().LogEvent("Reached max velocity while moving left\n");
         }
-        flipped = true;
+        this->SetScale({ -1,1 }); //assuming -1,1 is the inverted one
     }
     else {
-        if (velocity.x > x_drag * dt) {
-            velocity.x -= x_drag * dt;
+        if (this->GetVelocity().x > x_drag * dt) {
+            //velocity.x -= x_drag * dt;
+            this->UpdateVelocity({ -x_drag * dt,0 });
         }
-        else if (velocity.x < -x_drag * dt) {
-            velocity.x += x_drag * dt;
+        else if (this->GetVelocity().x < -x_drag * dt) {
+            //velocity.x += x_drag * dt;
+            this->UpdateVelocity({x_drag * dt,0 });
         }
         else {
-            velocity.x = 0;
+            //velocity.x = 0;
+            this->SetVelocity({ 0,this->GetVelocity().y});
         }
     }
 }
@@ -100,27 +108,31 @@ void Cat::change_state(State* new_state) {
     current_state->Enter(this);
 }
 
-void Cat::Draw(Math::TransformationMatrix camera_matrix)
-{
-    sprite.Draw(camera_matrix * object_matrix);
-}
+//void Cat::Draw(Math::TransformationMatrix camera_matrix)
+//{
+//    sprite.Draw(camera_matrix * object_matrix);
+//}
 
 void Cat::State_Jumping::Enter(Cat* cat) {
     cat->sprite.PlayAnimation(static_cast<int>(Animations::Jumping));
-    cat->velocity.y = Cat::jump_velocity;
+    //cat->velocity.y = Cat::jump_velocity;
+    cat->SetVelocity({ cat->GetVelocity().x, Cat::jump_velocity });
 }
 void Cat::State_Jumping::Update(Cat* cat, double dt) {
-    cat->velocity.y -= Mode1::gravity * dt;
+    //cat->velocity.y -= Mode1::gravity * dt;
+    cat->UpdateVelocity({ 0,-Mode1::gravity * dt });
     cat->update_x_velocity(dt);
-    cat->position += cat->velocity * dt;
+    //cat->position += cat->velocity * dt;
+    //cat->UpdatePosition({ cat->GetVelocity().x * dt,cat->GetVelocity().y * dt }); //CHANGE
 }
 void Cat::State_Jumping::CheckExit(Cat* cat) {
     if (Engine::GetInput().KeyDown(CS230::Input::Keys::Up) == false) {
         //Engine::GetLogger().LogDebug("Released Jump Early : " + std::to_string(cat->position.y));
         cat->change_state(&cat->state_falling);
         //cat->velocity.y = 0;
+        cat->SetVelocity({ cat->GetVelocity().x,0 });
     }
-    else if (cat->velocity.y <= 0) {
+    else if (cat->GetVelocity().y <= 0) {
         cat->change_state(&cat->state_falling);
     }
 }
@@ -130,12 +142,14 @@ void Cat::State_Idle::Enter([[maybe_unused]] Cat* cat) {
     cat->sprite.PlayAnimation(static_cast<int>(Animations::Idle)); 
 }
 void Cat::State_Idle::Update([[maybe_unused]] Cat* cat, [[maybe_unused]] double dt) {
-    if (cat->position.y > Mode1::floor) {
-        cat->velocity.y -= Mode1::gravity * dt;
+    if (cat->GetPosition().y > Mode1::floor) {
+        //cat->GetVelocity().y -= Mode1::gravity * dt;
+        cat->UpdateVelocity({ 0,Mode1::gravity * dt });
     }
-    else {  
-        cat->velocity.y = 0;
-        cat->position.y = Mode1::floor;
+    else {
+        cat->SetVelocity({cat->GetVelocity().x, 0});
+        //cat->position.y = Mode1::floor;
+        cat->SetPosition({ cat->GetPosition().x,Mode1::floor });
     }
 }
 void Cat::State_Idle::CheckExit(Cat* cat) {
@@ -155,23 +169,27 @@ void Cat::State_Falling::Enter([[maybe_unused]] Cat* cat) {
 }
 
 void Cat::State_Falling::Update(Cat* cat, double dt) {
-    cat->velocity.y -= Mode1::gravity * dt;
+    //cat->velocity.y -= Mode1::gravity * dt;
+    cat->UpdateVelocity({ 0,-Mode1::gravity * dt });
     cat->update_x_velocity(dt);
-    cat->position += cat->velocity * dt;
+    //cat->position += cat->velocity * dt;
+    //cat->UpdatePosition({ cat->GetVelocity().x * dt,cat->GetVelocity().y * dt });
 }
 
 void Cat::State_Falling::CheckExit(Cat* cat) {
-    if (cat->position.y <= Mode1::floor) {
-        cat->position.y = Mode1::floor;
-        cat->velocity.y = 0;
-        Engine::GetLogger().LogDebug("Landing: " + std::to_string(cat->position.y));
+    if (cat->GetPosition().y <= Mode1::floor) {
+        //cat->position.y = Mode1::floor;
+        cat->SetPosition({ cat->GetPosition().x,Mode1::floor });
+        //cat->velocity.y = 0;
+        cat->SetVelocity({ cat->GetVelocity().x, 0 });
+        Engine::GetLogger().LogDebug("Landing: " + std::to_string(cat->GetPosition().y));
 
-        if (std::abs(cat->velocity.x) < 0.1) {
+        if (std::abs(cat->GetVelocity().x) < 0.1) {
             cat->change_state(&cat->state_idle);
         }
         else {
-            bool pressing_opposite = (cat->velocity.x > 0 && Engine::GetInput().KeyDown(CS230::Input::Keys::Left)) ||
-                (cat->velocity.x < 0 && Engine::GetInput().KeyDown(CS230::Input::Keys::Right));
+            bool pressing_opposite = (cat->GetVelocity().x > 0 && Engine::GetInput().KeyDown(CS230::Input::Keys::Left)) ||
+                (cat->GetVelocity().x < 0 && Engine::GetInput().KeyDown(CS230::Input::Keys::Right));
             bool not_pressing_direction = !Engine::GetInput().KeyDown(CS230::Input::Keys::Left) && !Engine::GetInput().KeyDown(CS230::Input::Keys::Right);
 
             if (pressing_opposite || not_pressing_direction) {
@@ -187,28 +205,31 @@ void Cat::State_Falling::CheckExit(Cat* cat) {
 void Cat::State_Running::Enter(Cat* cat) {
     cat->sprite.PlayAnimation(static_cast<int>(Animations::Running));
     if (Engine::GetInput().KeyDown(CS230::Input::Keys::Right)) {
-        cat->flipped = false;
+        //cat->flipped = false;
+        cat->SetScale({ 1,1 });
     }
     else if (Engine::GetInput().KeyDown(CS230::Input::Keys::Left)) {
-        cat->flipped = true;
+        //cat->flipped = true;
+        cat->SetScale({ -1,1 });
     }
     
 }
 
 void Cat::State_Running::Update(Cat* cat, double dt) {
     cat->update_x_velocity(dt);
-    cat->position += cat->velocity * dt;
+    //cat->position += cat->velocity * dt;
+    //cat->UpdatePosition({ cat->GetVelocity().x * dt ,cat->GetVelocity().y * dt });
 }
 
 void Cat::State_Running::CheckExit(Cat* cat) {
-    if (cat->velocity.x == 0) {
+    if (cat->GetVelocity().x == 0) {
         cat->change_state(&cat->state_idle);
     }
     else if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Up)) {
         cat->change_state(&cat->state_jumping);
     }
     else {
-        bool moving_right = cat->velocity.x > 0;
+        bool moving_right = cat->GetVelocity().x > 0;
         bool right_down = Engine::GetInput().KeyDown(CS230::Input::Keys::Right);
         bool left_down = Engine::GetInput().KeyDown(CS230::Input::Keys::Left);
         if ((moving_right && left_down) || (!moving_right && right_down)) {
@@ -222,19 +243,22 @@ void Cat::State_Skidding::Enter([[maybe_unused]] Cat* cat) {
 }
 
 void Cat::State_Skidding::Update(Cat* cat, double dt) {
-    if (cat->velocity.x > 0) {
-        cat->velocity.x -= (Cat::x_drag + Cat::x_acceleration) * dt;
-        if (cat->velocity.x < 0) cat->velocity.x = 0;
+    if (cat->GetVelocity().x > 0) {
+        //cat->velocity.x -= (Cat::x_drag + Cat::x_acceleration) * dt;
+        cat->UpdateVelocity({ -(Cat::x_drag + Cat::x_acceleration) * dt,0 });
+        if (cat->GetVelocity().x < 0) cat->SetVelocity({0,cat->GetVelocity().y});
     }
-    else if (cat->velocity.x < 0) {
-        cat->velocity.x += (Cat::x_drag + Cat::x_acceleration) * dt;
-        if (cat->velocity.x > 0) cat->velocity.x = 0;
+    else if (cat->GetVelocity().x < 0) {
+        //cat->velocity.x += (Cat::x_drag + Cat::x_acceleration) * dt;
+        //if (cat->velocity.x > 0) cat->velocity.x = 0;
+        cat->UpdateVelocity({ +(Cat::x_drag + Cat::x_acceleration) * dt,0 });
+        if (cat->GetVelocity().x > 0) cat->SetVelocity({ 0,cat->GetVelocity().y });
     }
-    cat->position += cat->velocity * dt;
+    //cat->UpdatePosition({ cat->GetVelocity().x * dt ,cat->GetVelocity().y * dt });
 }
 
 void Cat::State_Skidding::CheckExit(Cat* cat) {
-    if (cat->velocity.x == 0) {
+    if (cat->GetVelocity().x == 0) {
         cat->change_state(&cat->state_idle);
     }
     else if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Up)) {

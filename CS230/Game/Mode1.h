@@ -14,10 +14,13 @@ Updated:    March 23, 2025
 #include "../Engine/Texture.h"
 #include "../Engine/Sprite.h"
 #include "../Engine/Vec2.h"
-#include "Cat.h"
-#include "Asteroid.h"
 #include <vector>
 #include "background.h"
+#include "..\Engine\GameObjectManager.h"
+
+class Cat;
+class Asteroid;
+
 
 class Mode1 : public CS230::GameState {
 public:
@@ -33,9 +36,9 @@ public:
     static constexpr double gravity = 800;
     static constexpr double floor = 80;
 private:
-    Cat cat;
-    Asteroid asteroid;
-    std::vector<Asteroid> asteroids;
+    CS230::GameObjectManager gameobjectmanager;
+    Cat* cat_ptr = nullptr;
+    std::vector<Asteroid*> asteroids;
     CS230::Camera camera;
     Background background;
     Math::vec2 cat_position;
