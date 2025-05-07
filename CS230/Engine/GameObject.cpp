@@ -11,28 +11,33 @@ Updated:        March 23, 2025
 
 #include "GameObject.h"
 
-CS230::GameObject::GameObject()
-{
-}
-
 CS230::GameObject::GameObject(Math::vec2 position) :
     GameObject(position, 0, { 1, 1 })
 {
+    current_state = &state_none;
 }
 
 CS230::GameObject::GameObject(Math::vec2 position, double rotation, Math::vec2 scale) :
     velocity({ 0,0 }),
+    current_state(&state_none),
     position(position),
     scale(scale),
     rotation(rotation)
 {
 }
-
 void CS230::GameObject::Update(double dt) {
+    current_state->Update(this, dt);
     sprite.Update(dt);
     if (velocity.x != 0 || velocity.y != 0) {
         UpdatePosition(velocity * dt);
     }
+    current_state->CheckExit(this);
+}
+
+void CS230::GameObject::change_state(State* new_state)
+{
+    current_state = new_state;
+    current_state->Enter(this);
 }
 
 void CS230::GameObject::Draw(Math::TransformationMatrix camera_matrix) {
@@ -105,3 +110,4 @@ void CS230::GameObject::UpdateRotation(double delta)
 {
     this->rotation += delta;
 }
+

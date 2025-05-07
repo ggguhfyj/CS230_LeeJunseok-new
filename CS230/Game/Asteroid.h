@@ -13,48 +13,52 @@ Created:    March 8, 2023
 //#include "..\Engine\Vec2.h"
 #include "..\Engine\Matrix.h"
 #include "..\Engine\GameObject.h"
-class Asteroid : public CS230::GameObject {
-   
-public:
-    Asteroid();
-    Asteroid(Math::vec2 start_position);
-    //void Load();
-    void Update(double dt) override;
-    //void Draw(Math::TransformationMatrix camera_matrix) override;
+#include "..\Engine\Camera.h"
 
-private:
+class Asteroid : public CS230::GameObject {
     enum class Animations {
         state_land,
         None
     };
-    class State {
+public:
+    Asteroid(Math::vec2 start_position);
+    //void Load();
+    //void Update(double dt) override;
+    //void Draw(Math::TransformationMatrix camera_matrix) override;
+
+private:
+    static constexpr double bounce_velocity = 500;
+    static constexpr double landing = 0.5;
+    /*class State {
     public:
         virtual void Enter(Asteroid* asteroid) = 0;
         virtual void Update(Asteroid* asteroid, double dt) = 0;
         virtual void CheckExit(Asteroid* asteroid) = 0;
         virtual std::string GetName() = 0;
-    };
-    class State_Bouncing : public State {
+    };*/
+
+
+    class State_Bouncing : public CS230::State {
     public:
-        virtual void Enter(Asteroid* asteroid) override;
-        virtual void Update(Asteroid* asteroid, double dt) override;
-        virtual void CheckExit(Asteroid* asteroid) override;
+        virtual void Enter(GameObject* object) override;
+        virtual void Update(GameObject* object, double dt) override;
+        virtual void CheckExit(GameObject* object) override;
         virtual std::string GetName() override { return "Bounding"; }
     };
     State_Bouncing state_bouncing;
 
-    class State_Landing : public State {
+    class State_Landing : public CS230::State {
     public:
-        virtual void Enter(Asteroid* asteroid) override;
-        virtual void Update(Asteroid* asteroid, double dt) override;
-        virtual void CheckExit(Asteroid* asteroid) override;
+        virtual void Enter(GameObject* object) override;
+        virtual void Update(GameObject* object, double dt) override;
+        virtual void CheckExit(GameObject* object) override;
         virtual std::string GetName() override { return "Bounding"; }
     };
     State_Landing state_landing;
 
-    void change_state(State* new_state);
+    //void change_state(State* new_state);
 
-    State* current_state = nullptr;
+    //State* current_state = nullptr;
 
 
 
@@ -63,6 +67,5 @@ private:
     //Math::vec2 position;
     //Math::vec2 velocity;
     //Math::TransformationMatrix object_matrix;
-    static constexpr double bounce_velocity = 500;
-    static constexpr double landing = 0.5;
+    
 };

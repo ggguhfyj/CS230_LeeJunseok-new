@@ -17,73 +17,65 @@ Created:    March 8, 2023
 class Cat : public CS230::GameObject{
 public:
     Cat(Math::vec2 start_position,const CS230::Camera& camera);
-    //void Load();
-    void Update(double dt) override;
-    //void Draw(Math::TransformationMatrix camera_matrix) override;
 
-    //const Math::vec2& GetPosition() const { return position; }; // public getter function;
+    void Update(double dt) override;
     const Math::vec2& GetPosition() const { return GameObject::GetPosition(); }
 private:
     
     void update_x_velocity(double dt);
-    class State {
+   /* class State {
     public:
         virtual void Enter(Cat* cat) = 0;
         virtual void Update(Cat* cat, double dt) = 0;
         virtual void CheckExit(Cat* cat) = 0;
         virtual std::string GetName() = 0;
-    };
-    class State_Jumping : public State {
+    };*/
+    class State_Idle : public CS230::State {
     public:
-        virtual void Enter(Cat* cat) override;
-        virtual void Update(Cat* cat, double dt) override;
-        virtual void CheckExit(Cat* cat) override;
-        std::string GetName() override { return "Jumping"; }
-    };
-    State_Jumping state_jumping;
-
-    class State_Idle : public State {
-    public:
-        virtual void Enter(Cat* cat) override;
-        virtual void Update(Cat* cat, double dt) override;
-        virtual void CheckExit(Cat* cat) override;
+        virtual void Enter(GameObject* object) override;
+        virtual void Update(GameObject* object, double dt) override;
+        virtual void CheckExit(GameObject* object) override;
         std::string GetName() override { return "Idle"; }
     };
     State_Idle state_idle;
 
-    class State_Falling : public State {
+    class State_Running : public CS230::State {
     public:
-        virtual void Enter(Cat* cat) override;
-        virtual void Update(Cat* cat, double dt) override;
-        virtual void CheckExit(Cat* cat) override;
-        std::string GetName() override { return "Falling"; }
-    };
-    State_Falling state_falling;
-    class State_Running : public State {
-    public:
-        virtual void Enter(Cat* cat) override;
-        virtual void Update(Cat* cat, double dt) override;
-        virtual void CheckExit(Cat* cat) override;
+        virtual void Enter(GameObject* object) override;
+        virtual void Update(GameObject* object, double dt) override;
+        virtual void CheckExit(GameObject* objectt) override;
         std::string GetName() override { return "Running"; }
     };
     State_Running state_running;
 
-    class State_Skidding : public State {
+    class State_Jumping : public CS230::State {
     public:
-        virtual void Enter(Cat* cat) override;
-        virtual void Update(Cat* cat, double dt) override;
-        virtual void CheckExit(Cat* cat) override;
+        virtual void Enter(GameObject* objectt) override;
+        virtual void Update(GameObject* object, double dt) override;
+        virtual void CheckExit(GameObject* object) override;
+        std::string GetName() override { return "Jumping"; }
+    };
+    State_Jumping state_jumping;
+
+    class State_Falling : public CS230::State {
+    public:
+        virtual void Enter(GameObject* object) override;
+        virtual void Update(GameObject* object, double dt) override;
+        virtual void CheckExit(GameObject* object) override;
+        std::string GetName() override { return "Falling"; }
+    };
+    State_Falling state_falling;
+
+    class State_Skidding : public CS230::State {
+    public:
+        virtual void Enter(GameObject* object) override;
+        virtual void Update(GameObject* object, double dt) override;
+        virtual void CheckExit(GameObject* object) override;
         std::string GetName() override { return "Skidding"; }
     };
     State_Skidding state_skidding;
 
 
-    void change_state(State* new_state);
-    State* current_state = nullptr;
-    //CS230::Sprite sprite;
-    //Math::vec2 start_position; we dont need this anymnore in 7.1
-    //Math::vec2 position;
-    //Math::vec2 velocity;
     const CS230::Camera& camera;
     //Math::TransformationMatrix object_matrix;
     static constexpr double x_acceleration = 300;

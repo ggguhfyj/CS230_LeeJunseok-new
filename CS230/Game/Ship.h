@@ -19,8 +19,8 @@ class Ship: public CS230::GameObject {
 public:
 	Ship(Math::vec2 position);
 	//void Load();
-	void Update(double dt);
-	void Draw(Math::TransformationMatrix camera_matrix);
+	void Update(double dt)override;
+	void Draw(Math::TransformationMatrix camera_matrix)override;
 	void Reset();
 private:
 	enum class FlameAnim {

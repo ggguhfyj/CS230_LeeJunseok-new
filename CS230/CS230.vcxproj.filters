@@ -70,6 +70,12 @@
     <ClCompile Include="Engine\GameObject.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Crates.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Robot.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\logger.h">
@@ -140,6 +146,12 @@
     </ClInclude>
     <ClInclude Include="Engine\GameObjectManager.h">
       <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Crates.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Robot.h">
+      <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

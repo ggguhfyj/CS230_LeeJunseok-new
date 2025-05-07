@@ -55,7 +55,7 @@ void CS230::GameStateManager::Update([[maybe_unused]] double dt) {
         status = Status::UPDATING;
         break;
     case Status::UPDATING:
-        if (current_gamestate != next_gamestate) {
+        if (current_gamestate != next_gamestate) {// if there is a change in game states
             status = Status::UNLOADING;
         }
         else {

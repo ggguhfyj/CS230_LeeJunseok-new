@@ -15,19 +15,18 @@ Created:    March 8, 2023
 #include <cmath>
 
 Cat::Cat(Math::vec2 start_position, const CS230::Camera& camera) :
-    //start_position(start_position),
-    //velocity({ 0.0,0.0 }),
-    //position(start_position),
-    camera(camera),
-    current_state(&state_idle)
-    //flipped(false)
-    
+    GameObject(start_position),
+    camera(camera)
 {
-    
-    start_position;
     sprite.Load("Assets/Cat.spt");
-    current_state->Enter(this);
-    
+
+    change_state(&state_idle);
+
+    SetVelocity({ 0.0, 0.0 });
+    SetScale({ 1,1 });
+
+    //current_state = &state_idle;
+    //current_state->Enter(this);
 }
 
 //void Cat::Load() {
@@ -41,11 +40,8 @@ Cat::Cat(Math::vec2 start_position, const CS230::Camera& camera) :
 
 
 void Cat::Update(double dt) {
-    current_state->Update(this, dt);
-    sprite.Update(dt);
-    UpdatePosition(dt * GetVelocity());
-    current_state->CheckExit(this);
-
+    GameObject::Update(dt);
+    //Engine::GetLogger().LogError("current cat state is : " + std::to_string(statedebug) );
     // Boundary Check
     if (GetPosition().x < camera.GetPosition().x + sprite.GetFrameSize().x / 2) {
         SetPosition({ camera.GetPosition().x + sprite.GetFrameSize().x / 2, GetPosition().y });
@@ -97,35 +93,23 @@ void Cat::update_x_velocity(double dt) {
     }
 }
 
-void Cat::change_state(State* new_state) {
-    if (!current_state || !new_state) {
-        Engine::GetLogger().LogError("null");
-        return;
-    }
-    Engine::GetLogger().LogDebug("Cat Leaving State: " + current_state->GetName());
-    Engine::GetLogger().LogDebug("Cat Entering State: " + new_state->GetName());
-    current_state = new_state;
-    current_state->Enter(this);
-}
 
-//void Cat::Draw(Math::TransformationMatrix camera_matrix)
-//{
-//    sprite.Draw(camera_matrix * object_matrix);
-//}
-
-void Cat::State_Jumping::Enter(Cat* cat) {
+void Cat::State_Jumping::Enter(GameObject* object) {
+    Cat* cat = static_cast<Cat*>(object);
     cat->sprite.PlayAnimation(static_cast<int>(Animations::Jumping));
     //cat->velocity.y = Cat::jump_velocity;
     cat->SetVelocity({ cat->GetVelocity().x, Cat::jump_velocity });
 }
-void Cat::State_Jumping::Update(Cat* cat, double dt) {
+void Cat::State_Jumping::Update(GameObject* object, double dt) {
     //cat->velocity.y -= Mode1::gravity * dt;
+    Cat* cat = static_cast<Cat*>(object);
     cat->UpdateVelocity({ 0,-Mode1::gravity * dt });
     cat->update_x_velocity(dt);
     //cat->position += cat->velocity * dt;
     //cat->UpdatePosition({ cat->GetVelocity().x * dt,cat->GetVelocity().y * dt }); //CHANGE
 }
-void Cat::State_Jumping::CheckExit(Cat* cat) {
+void Cat::State_Jumping::CheckExit(GameObject* object) {
+    Cat* cat = static_cast<Cat*>(object);
     if (Engine::GetInput().KeyDown(CS230::Input::Keys::Up) == false) {
         //Engine::GetLogger().LogDebug("Released Jump Early : " + std::to_string(cat->position.y));
         cat->change_state(&cat->state_falling);
@@ -138,10 +122,12 @@ void Cat::State_Jumping::CheckExit(Cat* cat) {
 }
 
 
-void Cat::State_Idle::Enter([[maybe_unused]] Cat* cat) { 
+void Cat::State_Idle::Enter([[maybe_unused]] GameObject* object) { 
+    Cat* cat = static_cast<Cat*>(object);
     cat->sprite.PlayAnimation(static_cast<int>(Animations::Idle)); 
 }
-void Cat::State_Idle::Update([[maybe_unused]] Cat* cat, [[maybe_unused]] double dt) {
+void Cat::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {
+    Cat* cat = static_cast<Cat*>(object);
     if (cat->GetPosition().y > Mode1::floor) {
         //cat->GetVelocity().y -= Mode1::gravity * dt;
         cat->UpdateVelocity({ 0,Mode1::gravity * dt });
@@ -152,7 +138,8 @@ void Cat::State_Idle::Update([[maybe_unused]] Cat* cat, [[maybe_unused]] double 
         cat->SetPosition({ cat->GetPosition().x,Mode1::floor });
     }
 }
-void Cat::State_Idle::CheckExit(Cat* cat) {
+void Cat::State_Idle::CheckExit(GameObject* object) {
+    Cat* cat = static_cast<Cat*>(object);
     if (Engine::GetInput().KeyDown(CS230::Input::Keys::Left)) {
         cat->change_state(&cat->state_running);
     }
@@ -164,11 +151,13 @@ void Cat::State_Idle::CheckExit(Cat* cat) {
     }
 }
 
-void Cat::State_Falling::Enter([[maybe_unused]] Cat* cat) {
+void Cat::State_Falling::Enter([[maybe_unused]] GameObject* object) {
+    Cat* cat = static_cast<Cat*>(object);
     cat->sprite.PlayAnimation(static_cast<int>(Animations::Falling));
 }
 
-void Cat::State_Falling::Update(Cat* cat, double dt) {
+void Cat::State_Falling::Update(GameObject* object, double dt) {
+    Cat* cat = static_cast<Cat*>(object);
     //cat->velocity.y -= Mode1::gravity * dt;
     cat->UpdateVelocity({ 0,-Mode1::gravity * dt });
     cat->update_x_velocity(dt);
@@ -176,7 +165,8 @@ void Cat::State_Falling::Update(Cat* cat, double dt) {
     //cat->UpdatePosition({ cat->GetVelocity().x * dt,cat->GetVelocity().y * dt });
 }
 
-void Cat::State_Falling::CheckExit(Cat* cat) {
+void Cat::State_Falling::CheckExit(GameObject* object) {
+    Cat* cat = static_cast<Cat*>(object);
     if (cat->GetPosition().y <= Mode1::floor) {
         //cat->position.y = Mode1::floor;
         cat->SetPosition({ cat->GetPosition().x,Mode1::floor });
@@ -202,7 +192,8 @@ void Cat::State_Falling::CheckExit(Cat* cat) {
     }
 }
 
-void Cat::State_Running::Enter(Cat* cat) {
+void Cat::State_Running::Enter(GameObject* object) {
+    Cat* cat = static_cast<Cat*>(object);
     cat->sprite.PlayAnimation(static_cast<int>(Animations::Running));
     if (Engine::GetInput().KeyDown(CS230::Input::Keys::Right)) {
         //cat->flipped = false;
@@ -215,13 +206,15 @@ void Cat::State_Running::Enter(Cat* cat) {
     
 }
 
-void Cat::State_Running::Update(Cat* cat, double dt) {
+void Cat::State_Running::Update(GameObject* object, double dt) {
+    Cat* cat = static_cast<Cat*>(object);
     cat->update_x_velocity(dt);
     //cat->position += cat->velocity * dt;
     //cat->UpdatePosition({ cat->GetVelocity().x * dt ,cat->GetVelocity().y * dt });
 }
 
-void Cat::State_Running::CheckExit(Cat* cat) {
+void Cat::State_Running::CheckExit(GameObject* object) {
+    Cat* cat = static_cast<Cat*>(object);
     if (cat->GetVelocity().x == 0) {
         cat->change_state(&cat->state_idle);
     }
@@ -238,11 +231,13 @@ void Cat::State_Running::CheckExit(Cat* cat) {
     }
 }
 
-void Cat::State_Skidding::Enter([[maybe_unused]] Cat* cat) {
+void Cat::State_Skidding::Enter([[maybe_unused]] GameObject* object) {
+    Cat* cat = static_cast<Cat*>(object);
     cat->sprite.PlayAnimation(static_cast<int>(Animations::Skidding));
 }
 
-void Cat::State_Skidding::Update(Cat* cat, double dt) {
+void Cat::State_Skidding::Update(GameObject* object, double dt) {
+    Cat* cat = static_cast<Cat*>(object);
     if (cat->GetVelocity().x > 0) {
         //cat->velocity.x -= (Cat::x_drag + Cat::x_acceleration) * dt;
         cat->UpdateVelocity({ -(Cat::x_drag + Cat::x_acceleration) * dt,0 });
@@ -257,7 +252,8 @@ void Cat::State_Skidding::Update(Cat* cat, double dt) {
     //cat->UpdatePosition({ cat->GetVelocity().x * dt ,cat->GetVelocity().y * dt });
 }
 
-void Cat::State_Skidding::CheckExit(Cat* cat) {
+void Cat::State_Skidding::CheckExit(GameObject* object) {
+    Cat* cat = static_cast<Cat*>(object);
     if (cat->GetVelocity().x == 0) {
         cat->change_state(&cat->state_idle);
     }

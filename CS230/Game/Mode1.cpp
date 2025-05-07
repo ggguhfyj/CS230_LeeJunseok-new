@@ -31,11 +31,23 @@ void Mode1::Load() {
     background.Add("Assets/Ships.png", 0.5);
     background.Add("Assets/Foreground.png", 1);
     
-    cat_ptr = new Cat({ 300, floor }, camera);
+    cat_ptr = new Cat({ 100, floor }, camera);
     gameobjectmanager.Add(cat_ptr);
     gameobjectmanager.Add(new Asteroid({ 600, floor }));
     gameobjectmanager.Add(new Asteroid({ 1800, floor }));
     gameobjectmanager.Add(new Asteroid({ 2400, floor }));
+
+    gameobjectmanager.Add(new Crates({ 900, floor }, 2));
+    gameobjectmanager.Add(new Crates({ 1400, floor }, 1));
+    gameobjectmanager.Add(new Crates({ 2000, floor }, 5));
+    gameobjectmanager.Add(new Crates({ 4000, floor }, 3));
+    gameobjectmanager.Add(new Crates({ 5600, floor }, 5));
+
+    gameobjectmanager.Add(new Robot({ 1200, Mode1::floor }));
+    gameobjectmanager.Add(new Robot({ 2200, Mode1::floor }));
+    gameobjectmanager.Add(new Robot({ 3400, Mode1::floor }));
+    gameobjectmanager.Add(new Robot({ 4200, Mode1::floor }));
+
     //cat.Load();
     camera.SetPosition({ 0,0 });
     camera.SetLimit({ { 0,0 }, { background.GetSize().x - Engine::GetWindow().GetSize().x, background.GetSize().y - Engine::GetWindow().GetSize().y } });
@@ -47,7 +59,7 @@ void Mode1::Load() {
 
 void Mode1::Update([[maybe_unused]] double dt) {
     gameobjectmanager.UpdateAll(dt);
-
+    
     camera.Update(cat_ptr->GetPosition());
     
 
