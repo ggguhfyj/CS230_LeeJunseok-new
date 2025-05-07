@@ -64,6 +64,12 @@
     <ClCompile Include="Engine\Animation.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\GameObjectManager.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObject.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\logger.h">
@@ -127,6 +133,12 @@
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Animation.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObject.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjectManager.h">
       <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>

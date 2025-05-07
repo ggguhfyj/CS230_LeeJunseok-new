@@ -68,21 +68,21 @@ void CS230::Animation::Update(double dt) {
     if (current_frame->Ended() == true) {
         current_frame->ResetTime();
         current_command++;
-        if (commands[current_command]->Type() == CommandType::PlayFrame) {
-            current_frame = static_cast<PlayFrame*>(commands[current_command]);
+        if (commands.at(current_command)->Type() == CommandType::PlayFrame) {
+            current_frame = static_cast<PlayFrame*>(commands.at(current_command));
         }
-        else if (commands[current_command]->Type() == CommandType::Loop) {
-            Loop* loop_data = static_cast<Loop*>(commands[current_command]);
+        else if (commands.at(current_command)->Type() == CommandType::Loop) {
+            Loop* loop_data = static_cast<Loop*>(commands.at(current_command));
             current_command = loop_data->LoopIndex();
-            if (commands[current_command]->Type() == CommandType::PlayFrame) {
-                current_frame = static_cast<PlayFrame*>(commands[current_command]);
+            if (commands.at(current_command)->Type() == CommandType::PlayFrame) {
+                current_frame = static_cast<PlayFrame*>(commands.at(current_command));
             }
             else {
                 Engine::GetLogger().LogError("Loop does not go to PlayFrame");
                 Reset();
             }
         }
-        else if (commands[current_command]->Type() == CommandType::End) {
+        else if (commands.at(current_command)->Type() == CommandType::End) {
             ended = true;
         }
     }
@@ -92,9 +92,10 @@ void CS230::Animation::Update(double dt) {
 
 void CS230::Animation::Reset()
 {
+
     current_command = 0;
     ended = false;
-    current_frame = static_cast<PlayFrame*>(commands[current_command]);//Set current_frame to the current PlayFrame* in the commands vector. (You will need to static cast.)
+    current_frame = static_cast<PlayFrame*>(commands.at(current_command));//Set current_frame to the current PlayFrame* in the commands vector. (You will need to static cast.)
     current_frame->ResetTime();
 }
 

@@ -20,17 +20,20 @@ Mode2::Mode2() : ship({ static_cast<double>(GetScreenWidth()) / 2 , static_cast<
 }   
 
 void Mode2::Load() {
-    ship.Load();
+
+    //ship.Load();
+    gameobjectmanager.Add(new Ship({ static_cast<double>(GetScreenWidth()) / 2 , static_cast<double>(GetScreenHeight()) / 2 }));
 }
 
 
     void Mode2::Draw() {
         Engine::GetWindow().Clear(0x000000FF);
-        ship.Draw();
+        gameobjectmanager.DrawAll(Math::TransformationMatrix());
+       // gameobjectmanager.DrawAll(camera.GetMatrix());
     }
 
     void Mode2::Update([[maybe_unused]] double dt) {
-        ship.Update(dt);
+        gameobjectmanager.UpdateAll(dt);
         if (IsKeyPressed(KEY_TWO)) {
             Engine::GetGameStateManager().ClearNextGameState();
             //Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));

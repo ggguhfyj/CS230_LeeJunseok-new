@@ -22,6 +22,8 @@
     <ClCompile Include="Engine\Animation.cpp" />
     <ClCompile Include="Engine\Camera.cpp" />
     <ClCompile Include="Engine\Engine.cpp" />
+    <ClCompile Include="Engine\GameObject.cpp" />
+    <ClCompile Include="Engine\GameObjectManager.cpp" />
     <ClCompile Include="Engine\GameStateManager.cpp" />
     <ClCompile Include="Engine\input.cpp" />
     <ClCompile Include="Engine\logger.cpp" />
@@ -43,6 +45,8 @@
     <ClInclude Include="Engine\Animation.h" />
     <ClInclude Include="Engine\Camera.h" />
     <ClInclude Include="Engine\Engine.h" />
+    <ClInclude Include="Engine\GameObject.h" />
+    <ClInclude Include="Engine\GameObjectManager.h" />
     <ClInclude Include="Engine\Gamestate.h" />
     <ClInclude Include="Engine\GameStateManager.h" />
     <ClInclude Include="Engine\input.h" />

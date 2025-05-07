@@ -19,7 +19,7 @@ Created:    March 8, 2023
 int main() {
     try {
         Engine& engine = Engine::Instance();
-        engine.Start("Assignment 6 - junseoklee@digipen.edu");
+        engine.Start("Assignment 7 - junseoklee@digipen.edu");
 
         Splash splash;
         engine.GetGameStateManager().AddGameState(splash);
