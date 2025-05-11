@@ -13,20 +13,20 @@ Created:    March 8, 2023
 #include "Splash.h"
 
 
-
 Splash::Splash() {
 
 }
 
 void Splash::Load() {
     counter = 0;
-    texture.Load("Assets/DigiPen.png");
+    //texture->Load("Assets/DigiPen.png");
+    this->texture = CS230::TextureManager().Load("Assets/DigiPen.png");
 }
 
 void Splash::Draw() {
     Engine::GetWindow().Clear(UINT_MAX);
 
-    texture.Draw(Math::TranslationMatrix({ (Engine::GetWindow().GetSize() - texture.GetSize()) / 2.0 }));
+    texture->Draw(Math::TranslationMatrix({ (Engine::GetWindow().GetSize() - texture->GetSize()) / 2.0 }));
 
 }
 

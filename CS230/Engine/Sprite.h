@@ -38,7 +38,7 @@ namespace CS230 {
     private:
         Math::ivec2 GetFrameTexel(int index) const;
 
-        Texture texture;
+        Texture* texture;
         std::vector<Math::ivec2> hotspots;
 
         int current_animation{-1};

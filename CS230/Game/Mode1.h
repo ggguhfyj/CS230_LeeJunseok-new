@@ -17,7 +17,8 @@ Updated:    March 23, 2025
 #include <vector>
 #include "background.h"
 #include "..\Engine\GameObjectManager.h"
-
+#include "Crates.h"
+#include "Robot.h"
 class Cat;
 class Asteroid;
 

@@ -15,6 +15,7 @@ Updated:    March 18, 2025
 #include "Window.h"
 #include "GameStateManager.h"
 #include "Input.h"
+#include "TextureManager.h"
 #include <chrono>
 
 class Engine {
@@ -39,7 +40,10 @@ public:
     static CS230::Input& GetInput() {
         return Instance().input;
     }
-
+    static CS230::TextureManager& GetTextureManager()
+    {
+        return Instance().texturemanager;
+    }
 
     void Start(std::string window_title);
     void Stop();
@@ -58,7 +62,7 @@ private:
     CS230::Window window;
     CS230::GameStateManager gamestatemanager;
     CS230::Input input;
-
+    CS230::TextureManager texturemanager;
 
     int frame_count = 0;
 

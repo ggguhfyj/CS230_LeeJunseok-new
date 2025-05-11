@@ -11,10 +11,10 @@ Updated:    March 23, 2023
 #include "Texture.h"
 #include "Engine.h"
 
-void CS230::Texture::Load(const std::filesystem::path& file_name) {
-    texture = LoadTexture(file_name.string().c_str());
-    SetTextureWrap(texture, TEXTURE_WRAP_CLAMP);
-}
+//void CS230::Texture::Load(const std::filesystem::path& file_name) {
+//    texture = LoadTexture(file_name.string().c_str());
+//    SetTextureWrap(texture, TEXTURE_WRAP_CLAMP);
+//}
 
 Math::ivec2 CS230::Texture::GetSize() const {
     return { texture.width, texture.height };
@@ -59,12 +59,13 @@ void CS230::Texture::Draw(Math::TransformationMatrix display_matrix, Math::ivec2
 
 
 
-CS230::Texture::Texture()
+CS230::Texture::Texture() :texture({ 0 })
 {
 }
 
 CS230::Texture::Texture(const std::filesystem::path& file_name) {
-    Load(file_name);
+    texture = LoadTexture(file_name.string().c_str());
+    SetTextureWrap(texture, TEXTURE_WRAP_CLAMP);
 }
 
 CS230::Texture::~Texture() {
@@ -87,6 +88,8 @@ CS230::Texture& CS230::Texture::operator=(Texture&& temporary) noexcept {
     std::swap(texture.format, temporary.texture.format);
     return *this;
 }
+
+
 
 void CS230::Texture::Draw(Math::TransformationMatrix display_matrix) {
     Math::vec2 bottom_left = display_matrix * Math::vec2{ 0, 0 };

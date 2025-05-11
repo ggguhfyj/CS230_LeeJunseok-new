@@ -73,8 +73,9 @@ namespace CS230 {
 
         std::string text;
         in_file >> text;
-        texture.Load(text);
-        frame_size = texture.GetSize();
+        //texture.Load(text);
+        this->texture = Engine::GetTextureManager().Load(text);
+        frame_size = texture->GetSize();
 
         in_file >> text;
         while (in_file.eof() == false) {
@@ -165,7 +166,7 @@ namespace CS230 {
     }
     
     void CS230::Sprite::Draw(Math::TransformationMatrix display_matrix) {
-        texture.Draw(display_matrix * Math::TranslationMatrix(-GetHotSpot(0)), GetFrameTexel(animations.at(current_animation)->CurrentFrame()), GetFrameSize());
+        texture->Draw(display_matrix * Math::TranslationMatrix(-GetHotSpot(0)), GetFrameTexel(animations.at(current_animation)->CurrentFrame()), GetFrameSize());
     }
    
 

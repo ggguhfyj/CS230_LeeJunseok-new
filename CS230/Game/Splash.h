@@ -11,6 +11,7 @@ Created:    March 8, 2023
 #pragma once
 #include "../Engine/GameState.h"
 #include "../Engine/Texture.h"
+#include "..\Engine\TextureManager.h"
 
 class Splash : public CS230::GameState {
 public:
@@ -25,6 +26,6 @@ public:
 
 public:
     double counter = 0;
-    CS230::Texture texture;
+    CS230::Texture* texture;
 
 };

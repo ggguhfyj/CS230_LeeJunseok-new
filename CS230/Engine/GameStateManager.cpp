@@ -67,6 +67,7 @@ void CS230::GameStateManager::Update([[maybe_unused]] double dt) {
     case Status::UNLOADING:
         Engine::GetLogger().LogVerbose("Unload " + current_gamestate->GetName());
         current_gamestate->Unload();
+        Engine::GetTextureManager().Unload();
         Engine::GetLogger().LogVerbose("Unload Complete");
         status = (next_gamestate == nullptr) ? Status::STOPPING : Status::LOADING;
         break;

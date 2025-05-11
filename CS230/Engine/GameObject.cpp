@@ -11,7 +11,7 @@ Updated:        March 23, 2025
 
 #include "GameObject.h"
 
-CS230::GameObject::GameObject()
+CS230::GameObject::GameObject() : scale({ 1.0, 1.0 })
 {
 }
 
@@ -40,7 +40,12 @@ void CS230::GameObject::Draw(Math::TransformationMatrix camera_matrix) {
 }
 
 const Math::TransformationMatrix& CS230::GameObject::GetMatrix() {
-    object_matrix = Math::TranslationMatrix(position) * Math::RotationMatrix(rotation) * Math::ScaleMatrix(scale);
+    if (matrix_outdated)
+    {
+        object_matrix = Math::TranslationMatrix(position) * Math::RotationMatrix(rotation) * Math::ScaleMatrix(scale);
+        matrix_outdated = false;
+    }
+    
     return object_matrix;
 }
 
@@ -69,39 +74,47 @@ double CS230::GameObject::GetRotation() const
 }
 
 void CS230::GameObject::SetPosition(Math::vec2 new_position) {
+    matrix_outdated = true;
     position = new_position;
 }
 
 void CS230::GameObject::UpdatePosition(Math::vec2 delta) {
+    matrix_outdated = true;
     position += delta;
 }
 
 void CS230::GameObject::SetVelocity(Math::vec2 new_position)
 {
+    matrix_outdated = true;
     this->velocity = new_position;
 }
 
 void CS230::GameObject::UpdateVelocity(Math::vec2 delta)
 {
+    matrix_outdated = true;
     this->velocity += delta;
 }
 
 void CS230::GameObject::SetScale(Math::vec2 new_scale)
 {
+    matrix_outdated = true;
     this->scale = new_scale;
 }
 
 void CS230::GameObject::UpdateScale(Math::vec2 delta)
 {
+    matrix_outdated = true;
     this->scale += delta;
 }
 
 void CS230::GameObject::SetRotation(double new_rotation)
 {
+    matrix_outdated = true;
     this->rotation = new_rotation;
 }
 
 void CS230::GameObject::UpdateRotation(double delta)
 {
+    matrix_outdated = true;
     this->rotation += delta;
 }

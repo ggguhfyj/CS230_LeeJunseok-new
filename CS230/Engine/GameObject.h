@@ -44,7 +44,7 @@ namespace CS230 {
 
     private:
         Math::TransformationMatrix object_matrix;
-
+        bool matrix_outdated = true;
         double rotation;
         Math::vec2 scale;
         Math::vec2 position;

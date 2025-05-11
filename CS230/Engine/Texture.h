@@ -14,11 +14,11 @@ Updated:    March 23, 2023
 #include <filesystem>
 #include <raylib.h>
 #include "matrix.h"
+
 namespace CS230 {
     class Texture {
     public:
-        Texture();
-        Texture(const std::filesystem::path& file_name);
+        
         ~Texture();
         //new texture draw function
         void Draw(Math::TransformationMatrix display_matrix, Math::ivec2 texel_position, Math::ivec2 frame_size);
@@ -34,7 +34,11 @@ namespace CS230 {
         void Draw(Math::TransformationMatrix display_matrix);
         Math::ivec2 GetSize() const;
 
+        friend class TextureManager;
+
     private:
         Texture2D texture;
+        Texture();
+        Texture(const std::filesystem::path& file_name);
     };
 }
